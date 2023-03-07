@@ -1,3 +1,4 @@
+import os
 import sys
 import threading
 import numpy
@@ -26,10 +27,17 @@ def main():
     # Accept user input from stdin or from a file
     print("Enter 'f' to read input from a file or 'i' to read input from keyboard: ")
     input_type = input().lower()
+    if not input_type:
+        print("Invalid input.")
+        return
+
     if input_type == 'f':
         # Input filename
         print("Enter the file path (without the extension): ")
         file_path = input()
+        if not file_path:
+            print("Invalid input.")
+            return
         if not os.path.isfile(f"{file_path}.txt"):
             print("File not found.")
             return
