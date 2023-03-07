@@ -24,10 +24,12 @@ def compute_height(n, parents):
 
 def main():
     # Accept user input from stdin or from a file
-    input_type = input("Enter 'f' to read input from a file or 'i' to read input from keyboard: ").lower()
+    print("Enter 'f' to read input from a file or 'i' to read input from keyboard: ")
+    input_type = input().lower()
     if input_type == 'f':
         # Input filename
-        file_path = input("Enter the file path (without the extension): ")
+        print("Enter the file path (without the extension): ")
+        file_path = input()
         if not os.path.isfile(f"{file_path}.txt"):
             print("File not found.")
             return
@@ -43,7 +45,8 @@ def main():
     elif input_type == 'i':
         # Input number of nodes
         try:
-            n = int(input("Enter the number of nodes: "))
+            print("Enter the number of nodes: ")
+            n = int(input())
         except ValueError:
             print("Invalid input.")
             return
@@ -52,7 +55,8 @@ def main():
         parents = []
         for i in range(n):
             try:
-                parent = int(input(f"Enter the parent of node {i}: "))
+                print(f"Enter the parent of node {i}: ")
+                parent = int(input())
             except ValueError:
                 print("Invalid input.")
                 return
