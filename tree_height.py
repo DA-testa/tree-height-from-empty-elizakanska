@@ -1,27 +1,84 @@
-# python3
-
+import os
 import sys
 import threading
 import numpy
 
 
 def compute_height(n, parents):
-    # Write this function
-    max_height = 0
-    # Your code here
+    # Create an array to store the height of each node in the tree
+    heights = numpy.zeros(n, dtype=int)
+
+    # Iterate over each node in the tree
+    for node in range(n):
+        # If the node is the root, set its height to 1
+        if parents[node] == -1:
+            heights[node] = 1
+        else:
+            # If the node is not the root, calculate its height as the height of its parent plus 1
+            # and update the maximum height if necessary
+            heights[node] = heights[parents[node]] + 1
+            max_height = max(max_height, heights[node])
+
+    # Return the maximum height of the tree
     return max_height
 
 
 def main():
-    # implement input form keyboard and from files
-    
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
-    
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
-    # call the function and output it's result
-    pass
+    # Accept user input from stdin or from a file
+    print("Enter 'f' to read input from a file or 'i' to read input from keyboard: ")
+    input_type = input().lower() or 'f'
+    if not input_type:
+        print("Invalid input.")
+        return
+
+    if input_type == 'f':
+        # Input filename
+        print("Enter the file path (without the extension): ")
+        file_path = input()
+        if not file_path:
+            print("Invalid input.")
+            return
+        if not os.path.isfile(f"{file_path}.txt"):
+            print("File not found.")
+            return
+
+        try:
+            # Read input from file
+            with open(f"{file_path}.txt") as file:
+                n = int(file.readline())
+                parents = list(map(int, file.readline().split()))
+        except ValueError:
+            print("Invalid input.")
+            return
+    elif input_type == 'i':
+        # Input number of nodes
+        try:
+            print("Enter the number of nodes: ")
+            n = int(input())
+        except ValueError:
+            print("Invalid input.")
+            return
+
+        # Input parent values
+        parents = []
+        for i in range(n):
+            try:
+                print(f"Enter the parent of node {i}: ")
+                parent = int(input())
+            except ValueError:
+                print("Invalid input.")
+                return
+            parents.append(parent)
+    else:
+        print("Invalid input.")
+        return
+
+    # Calculate the height of the tree
+    tree_height = compute_height(n, parents)
+
+    # Output the result
+    print("Height of the tree:", tree_height)
+
 
 # In Python, the default limit on recursion depth is rather low,
 # so raise it here for this problem. Note that to take advantage
@@ -30,4 +87,3 @@ sys.setrecursionlimit(10**7)  # max depth of recursion
 threading.stack_size(2**27)   # new thread will get stack of such size
 threading.Thread(target=main).start()
 main()
-# print(numpy.array([1,2,3]))
