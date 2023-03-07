@@ -1,62 +1,72 @@
-# python3
-
 import sys
 import threading
 import numpy
 
+
 def compute_height(n, parents):
-    # Izveido masīvu, kurā glabāt visus kokus
-    trees = [0] * n
+    # Create an array to store the height of each node in the tree
+    heights = numpy.zeros(n, dtype=int)
 
-    # Katram masīva elementam aprēķina augstumu
+    # Iterate over each node in the tree
     for node in range(n):
-        # Ja elementam augstums ir jau aprēķināts, tas tiek izlaists
-        if trees[node] != 0:
-            continue
+        # If the node is the root, set its height to 1
+        if parents[node] == -1:
+            heights[node] = 1
+        else:
+            # If the node is not the root, calculate its height as the height of its parent plus 1
+            # and update the maximum height if necessary
+            heights[node] = heights[parents[node]] + 1
+            max_height = max(max_height, heights[node])
 
-        # Ja elements nav vēl aprēķināts, to aprēķina, izmantojot tā 'paternts'
-        height = 0
-        while node != -1:
-            if trees[node] != 0:
-                height += trees[node]
-                break
-            height += 1
-            node = parents[node]
-        trees[node] = height
+    # Return the maximum height of the tree
+    return max_height
 
-    # Koka garums ir lielākā iespējamā vērtība jebkuram elementam
-    return max(trees)
 
 def main():
-    # Pavaicā lietotājam, vai vēlās ievadīt no klavietūras, vai no faila
-    I_or_F = input("Enter 'I' for manual input or 'F' for file input: ").strip().upper()
-
-    if I_or_F == 'I':
-        # Klavietūras ievade
-        n = int(input("Enter the number of nodes: "))
-        parents = list(map(int, input("Enter the parent indices, separated by spaces: ").split()))
-    elif I_or_F == 'F':
-        # Faila ievade
-        file_name = input("Enter the name of the input file (in 'folder/filename' format): ")
-        if 'a' in file_name:
-            print("Invalid filename: cannot contain the letter 'a'")
+    # Accept user input from stdin or from a file
+    input_type = input("Enter 'f' to read input from a file or 'i' to read input from keyboard: ").lower()
+    if input_type == 'f':
+        # Input filename
+        file_path = input("Enter the file path (without the extension): ")
+        if not os.path.isfile(f"{file_path}.txt"):
+            print("File not found.")
             return
 
         try:
-            with open(file_name, 'r') as chosen_file:
-                n = int(chosen_file.readline().strip())
-                parents = list(map(int, chosen_file.readline().strip().split()))
-        except FileNotFoundError:
-            print("File not found")
+            # Read input from file
+            with open(f"{file_path}.txt") as file:
+                n = int(file.readline())
+                parents = list(map(int, file.readline().split()))
+        except ValueError:
+            print("Invalid input.")
             return
+    elif input_type == 'i':
+        # Input number of nodes
+        try:
+            n = int(input("Enter the number of nodes: "))
+        except ValueError:
+            print("Invalid input.")
+            return
+
+        # Input parent values
+        parents = []
+        for i in range(n):
+            try:
+                parent = int(input(f"Enter the parent of node {i}: "))
+            except ValueError:
+                print("Invalid input.")
+                return
+            parents.append(parent)
     else:
-        # Kļūme - nederīga ievade
-        print("Invalid input source")
+        print("Invalid input.")
         return
 
-    # Koka garuma aprēķins
-    height = compute_height(n, parents)
-    print("The height of the tree is:", height)
+    # Calculate the height of the tree
+    tree_height = compute_height(n, parents)
+
+    # Output the result
+    print("Height of the tree:", tree_height)
+
 
 # In Python, the default limit on recursion depth is rather low,
 # so raise it here for this problem. Note that to take advantage
@@ -64,6 +74,3 @@ def main():
 sys.setrecursionlimit(10**7)  # max depth of recursion
 threading.stack_size(2**27)   # new thread will get stack of such size
 threading.Thread(target=main).start()
-
-main()
-print(numpy.array([1,2,3]))
