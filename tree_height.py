@@ -26,7 +26,7 @@ def compute_height(n, parents):
 def main():
     # Accept user input from stdin or from a file
     print("Enter 'f' to read input from a file or 'i' to read input from keyboard: ")
-    input_type = input().lower()
+    input_type = input().lower() or 'i'
     if not input_type:
         print("Invalid input.")
         return
